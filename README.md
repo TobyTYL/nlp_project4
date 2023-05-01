@@ -2,8 +2,7 @@
 [![](https://img.shields.io/badge/Python-3.6-blue.svg)](https://www.python.org/)
 [![](https://img.shields.io/badge/pandas-0.21.0-brightgreen.svg)](https://pypi.python.org/pypi/pandas/0.21.0)
 [![](https://img.shields.io/badge/numpy-1.13.1-brightgreen.svg)](https://pypi.python.org/pypi/numpy/1.13.1)
-[![](https://img.shields.io/badge/jieba-0.39-brightgreen.svg)](https://pypi.python.org/pypi/jieba/0.39)
-[![](https://img.shields.io/badge/Keras-2.2.4-brightgreen.svg)](https://pypi.python.org/pypi/Keras/2.2.4)
+
 
 
 ## Introduction
@@ -11,47 +10,41 @@ The classification of new text is achieved by training the text with existing la
 
 
 ## Load data
-**准备了单一标签的电商数据4000多条和多标签的司法罪名数据15000多条，数据仅供学术研究使用，禁止商业传播。**<br>
-* 单一标签的电商数据4000条为.csv格式，来源于真实电商评论，由'evaluation'和'label'两个字段组成，分别表示用户评论和正负面标签，建议pandas读取，读入后为dataframe。<br>
-* 多标签的司法罪名数据15000条为.json格式，来源于2018‘法研杯’法律智能挑战赛（CAIL2018），由'fact'和'accusation'两个字段组成，分别表示事实陈述和罪名，读入后为列表。<br>
+
 ``` python
 from TextClassification.load_data import load_data
 
-# 单标签
+# Single label
 data = load_data('single')
 x = data['evaluation']
 y = [[i] for i in data['label']]
 
-# 多标签
+# Multiple labels
 data = load_data('multiple')
 x = [i['fact'] for i in data]
 y = [i['accusation'] for i in data]
 ```
-![](https://github.com/renjunxiang/Text-Classification/blob/master/picture/data_single.png)
-![](https://github.com/renjunxiang/Text-Classification/blob/master/picture/data_multiple.png)
 
-## 文本预处理：DataPreprocess.py
-**用于对原始文本数据做预处理，包含分词、转编码、长度统一等方法，已封装进TextClassification.py**<br>
+## Data Preprocess
+* Used for pre-processing raw text data, including methods for word separation, transcoding, length unification, etc., encapsulated in TextClassification.py
 
 ``` python
 preprocess = DataPreprocess()
 
-# 处理文本
+# Processing text
 texts_cut = preprocess.cut_texts(texts, word_len)
 preprocess.train_tokenizer(texts_cut, num_words)
 texts_seq = preprocess.text2seq(texts_cut, sentence_len)
 
-# 得到标签
+# Tags
 preprocess.creat_label_set(labels)
 labels = preprocess.creat_labels(labels)
 ```
 
-## 模型训练及预测：TextClassification.py
-**整合预处理、网络的训练、网络的预测，demo请参考两个demo脚本**<br>
+## Model Training and Prediction：TextClassification.py
 
-**方法如下：**<br>
-* fit：输入原始文本和标签，可以在已有的模型基础上继续训练，不输入模型则重新开始训练；<br>
-* predict：输入原始文本；<br>
+* fit: Input the original text and labels to continue training on top of the existing model, or start training again without inputting the model<br>
+* predict: Enter the original text<br>
 
 ``` python
 from TextClassification import TextClassification
@@ -68,11 +61,11 @@ clf.fit(texts_seq=texts_seq,
         batch_size=64,
         model=None)
 
-# 保存整个模块,包括预处理和神经网络
+# Save the entire module
 with open('./%s.pkl' % data_type, 'wb') as f:
     pickle.dump(clf, f)
 
-# 导入刚才保存的模型
+# Import the model
 with open('./%s.pkl' % data_type, 'rb') as f:
     clf = pickle.load(f)
 y_predict = clf.predict(x_test)
