@@ -8,17 +8,7 @@ def CNN(input_dim,
         vec_size,
         output_shape,
         output_type='multiple'):
-    '''
-    Creat CNN net,use Embedding+CNN1D+GlobalMaxPool1D+Dense.
-    You can change filters and dropout rate in code..
 
-    :param input_dim: Size of the vocabulary
-    :param input_length:Length of input sequences
-    :param vec_size:Dimension of the dense embedding
-    :param output_shape:Target shape,target should be one-hot term
-    :param output_type:last layer type,multiple(activation="sigmoid") or single(activation="softmax")
-    :return:keras model
-    '''
     data_input = Input(shape=[input_length])
     word_vec = Embedding(input_dim=input_dim + 1,
                          input_length=input_length,

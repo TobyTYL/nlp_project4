@@ -9,15 +9,12 @@ class TextClassification():
         self.model = None
 
     def get_preprocess(self, texts, labels, word_len=1, num_words=2000, sentence_len=30):
-        # 数据预处理
         preprocess = DataPreprocess()
 
-        # 处理文本
         texts_cut = preprocess.cut_texts(texts, word_len)
         preprocess.train_tokenizer(texts_cut, num_words)
         texts_seq = preprocess.text2seq(texts_cut, sentence_len)
 
-        # 得到标签
         preprocess.creat_label_set(labels)
         labels = preprocess.creat_labels(labels)
         self.preprocess = preprocess
@@ -32,7 +29,6 @@ class TextClassification():
                         128,
                         len(preprocess.label_set),
                         output_type)
-        # 训练神经网络
         model.fit(texts_seq,
                   texts_labels,
                   epochs=epochs,
@@ -44,7 +40,6 @@ class TextClassification():
         word_len = preprocess.word_len
         sentence_len = preprocess.sentence_len
 
-        # 处理文本
         texts_cut = preprocess.cut_texts(texts, word_len)
         texts_seq = preprocess.text2seq(texts_cut, sentence_len)
 
